@@ -1,0 +1,89 @@
+<html>
+    <head>
+      <title>Group Chat</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #login { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+      </style>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+      <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+        <script>
+          
+          // $(document). ready(function (){
+          //     var socket = io. connect();
+          //     $('#chatform').submit(function(){
+          //     socket.emit('chat message', $('#message').val());
+          //     $('#message').val('');
+          //     return false;
+          //     })
+          //     socket.on('chat message', function(msg){
+          //     console.log(msg)
+          //     $('#messages').append($('<li>').text(msg));
+          //     });
+              
+          //  })
+      </script>
+    </head>
+<body>
+    <h3>Welcome to Group Chat</h3>
+
+    <!--<button id="login" onclick="myFunction()">Login</button>-->
+    <p id="greeting"></p>
+    <!--<h5>Users:</h5>
+    <ul id="users"></ul>-->
+    <script>
+      window.onload = function myFunction() {
+          var person = prompt("Please enter your name", "Master Yoda");
+          if (person != null) {
+              document.getElementById("greeting").innerHTML =
+              "Welcome " + person + "! Enjoy your chat";
+              io = io.connect();
+              io.emit('got_a_new_user', {name: person})
+              // io.on ('new_user', function(data){
+              //   $('#users').append($('<li>').text(data.name));
+              io.on ('existing_users', function(users){
+                for( var i = 0; i < users.length; i ++){
+                $('#users').append($('<li>').text(users[i]));      
+                }
+              })
+
+
+          }
+          $(document). ready(function (){
+              var socket = io. connect();
+              $('#chatform').submit(function(){
+              socket.emit('chat message', {name: person, message: $('#message').val()});
+              $('#message').val('');
+              return false;
+              })
+              socket.on('chat message', function(msg){
+              console.log(msg.name + msg.message)
+              $('#messages').append($('<li>').text(msg.name + ":  " + msg.message));
+              });
+              
+           })
+
+
+
+      }
+    </script>
+    
+    <ul id="messages"></ul>
+
+
+    <form action="" id="chatform">
+      <input id="message" autocomplete="off" /><button>Send</button>
+    </form>
+   
+
+
+</body>
+</html>

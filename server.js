@@ -27,11 +27,14 @@ var server  = app. listen(8000, function() {
 });
 
 var io  =  require( 'socket.io'). listen(server);
-
+ var users = {};
+  
+var messagelog = []
 
 io.sockets. on( 'connection', function (socket) {
   console. log( "USER CONNECTED!");
   console. log(socket.id);
+  io.emit('logged messages', messagelog);
   socket.on('disconnect', function(){
     console.log('USER DISCONNECTED :(');
   });
@@ -43,13 +46,15 @@ io.sockets. on( 'connection', function (socket) {
     
     io.sockets.emit('existing_users', users)
   });
-  var users = {};
-  users
-
+ 
   socket.on('chat message', function(msg){
     console.log('message: ' + msg.name + msg.message);
+    messagelog.push(msg)
+    console.log(messagelog)
     
     io.emit('chat message', msg);
-    });
+  });
+
+  // io.emit('logged messages', messagelog)
   });
 

@@ -54,11 +54,18 @@
                 $('#users').append($('<li>').text(users[i]));      
                 }
               })
-
+              
 
           }
           $(document). ready(function (){
               var socket = io. connect();
+              socket.on('logged messages', function(msg){
+                for(var i = 0; i < msg.length; i++){
+                  $('#messages').append($('<li>').text(msg[i].name + ":  " + msg[i].message));
+                }
+              })
+
+
               $('#chatform').submit(function(){
               socket.emit('chat message', {name: person, message: $('#message').val()});
               $('#message').val('');
@@ -68,6 +75,8 @@
               console.log(msg.name + msg.message)
               $('#messages').append($('<li>').text(msg.name + ":  " + msg.message));
               });
+              
+              
               
            })
 
